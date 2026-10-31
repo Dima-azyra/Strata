@@ -43,20 +43,11 @@ too and cannot hold any of the model.
 | Instinct MI50 / MI60, Radeon VII | gfx906 (wave64) | built by hand: `-DSTRATA_HIP_GFX906=ON` |
 
 ### RX 5700 XT (gfx1010) with IQ3_S
+
+
 | Prefill | Decode | Context |
 | --- | --- | --- |
 | ~100–130 tok/s on long prompts (2K+ tokens). Short prompts may vary more due to overhead. | ~17–32 tok/s (depending on context and draft acceptance). | 131072 |
-
-**Build steps**
-1. Download "Source code (zip)" https://github.com/Niko1221/Strata/releases/tag/v0.1.45
-2. In `setup.py`, add `0x731F: "gfx1010"` to `_WIN_AMD_DID`.
-3. Build the engine:
-   ```
-   cmd
-   set STRATA_HIP_ARCHS=gfx1010
-   tools\hip\build_windows.bat
-   
-<details>
 
 **Environment:**
 
@@ -65,7 +56,25 @@ too and cannot hold any of the model.
 - hipBLASLt: 100500
 - OS: Windows 10 (64-bit)
 - RAM: 64 GB
-
+- 
+**Build steps**
+1. Download "Source code (zip)" https://github.com/Niko1221/Strata/releases/tag/v0.1.45
+2. In `setup.py`, add `0x731F: "gfx1010"` to `_WIN_AMD_DID`.
+3. Build the engine:
+   ```
+   cmd
+   set STRATA_HIP_ARCHS=gfx1010
+   tools\hip\build_windows.bat
+4. Wait for it to finish (it may take 30–60 minutes). It will create a file: dist\strata-windows-x64-hip.zip
+5. Run the setup:
+   ```
+   cmd
+   python setup.py --backend hip --setup
+ - Which model? -> 1
+ - Edit strata-iq3_s.json
+   
+ <details>
+    
 ***strata-iq3_s.json***
 {
  "exe": "G:\\ai\\Strata-main\\engine\\strata.exe",
@@ -124,6 +133,10 @@ too and cannot hold any of the model.
 }
 
 </details>
+
+6. Double-click run-iq3_s.bat
+  
+
 
 ### Maxwell (sm_52)
 
