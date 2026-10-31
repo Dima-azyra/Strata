@@ -42,6 +42,102 @@ too and cannot hold any of the model.
 | Radeon PRO V520 / Pro 5600M (RDNA1) | gfx1011 | built by hand: `-DCMAKE_HIP_ARCHITECTURES=gfx1011`; builds with 0 errors, untested on hardware |
 | Instinct MI50 / MI60, Radeon VII | gfx906 (wave64) | built by hand: `-DSTRATA_HIP_GFX906=ON` |
 
+### RX 5700 XT (gfx1010) with IQ3_S
+
+
+| Prefill | Decode | Context |
+| --- | --- | --- |
+| ~100–130 tok/s on long prompts (2K+ tokens). Short prompts may vary more due to overhead. | ~17–32 tok/s (depending on context and draft acceptance). | 131072 |
+
+**Environment:**
+
+- Strata v 0.1.45.3 (built from source via `tools\hip\build_windows.bat`)
+- ROCm: TheRock 10.2.0a20260930
+- hipBLASLt: 100500
+- OS: Windows 10 (64-bit)
+- RAM: 64 GB
+- 
+**Build steps**
+1. Download "Source code (zip)" https://github.com/Niko1221/Strata/releases/tag/v0.1.45
+2. In `setup.py`, add `0x731F: "gfx1010"` to `_WIN_AMD_DID`.
+3. Build the engine:
+   ```
+   cmd
+   set STRATA_HIP_ARCHS=gfx1010
+   tools\hip\build_windows.bat
+4. Wait for it to finish (it may take 30–60 minutes). It will create a file: dist\strata-windows-x64-hip.zip
+5. Run the setup:
+   ```
+   cmd
+   python setup.py --backend hip --setup
+ - Which model? -> 1
+ - Edit strata-iq3_s.json
+   
+ <details>
+    
+***strata-iq3_s.json***
+{
+ "exe": "G:\\ai\\Strata-main\\engine\\strata.exe",
+ "args": [
+  "--pack",
+  "G:\\ai\\Strata-data\\packs\\iq3_s",
+  "--native",
+  "G:\\ai\\Strata-data\\models\\IQ3_S\\Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
+  "--ple-gguf",
+  "G:\\ai\\Strata-data\\models\\IQ3_S\\Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf",
+  "--expert-profile",
+  "G:\\ai\\Strata-main\\data\\expert-profile.bin",
+  "--expert-cache",
+  "auto",
+  "--prefill",
+  "auto",
+  "--spec",
+  "4",
+  "--spec-min-p",
+  "0.85",
+  "--mtp",
+  "G:\\ai\\Strata-data\\mtp\\rt",
+  "--max-context",
+  "131072",
+  "--kv",
+  "q4_0",
+  "--vision",
+  "--adapt-async",
+  "1"
+ ],
+ "env": {
+  "STRATA_PIN_BY_NEED": "1",
+  "STRATA_PREFILL_MMQ": "1",
+  "STRATA_PREFILL_CPU_SHARE": "auto"
+ },
+ "cwd": "G:\\ai\\Strata-main",
+ "tokenizer": "G:\\ai\\Strata-data\\packs\\iq3_s\\tokenizer",
+ "model_name": "qwen3.8-flash-next-iq3_s",
+ "log": "G:\\ai\\Strata-main\\strata-iq3_s.log",
+ "lib_dirs": [
+  "G:\\ai\\Strata-main\\engine\\rocm\\bin"
+ ],
+ "port": 8080,
+ "reasoning_effort": "medium",
+ "backend": "hip",
+ "vision": {
+  "exe": "G:\\ai\\Strata-main\\engine\\strata-vision.exe",
+  "mmproj": "G:\\ai\\Strata-data\\models\\mmproj-Qwen3.8-Flash-Next-BF16.gguf",
+  "model": "G:\\ai\\Strata-data\\models\\IQ3_S\\Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
+  "gpu": false,
+  "max_tokens": 300,
+  "threads": 16
+ },
+ "open_browser": false,
+ "allowed_hosts": ["host.docker.internal"]
+}
+
+</details>
+
+6. Double-click run-iq3_s.bat
+  
+
+
 ### Maxwell (sm_52)
 
 One reporter ran Strata v0.1.44.1 on two Quadro M6000 24 GB (Ubuntu, driver 580) with Qwen3.8-Flash-Next at IQ1 and saw about
