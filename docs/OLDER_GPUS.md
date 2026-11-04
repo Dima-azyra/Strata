@@ -47,8 +47,9 @@ too and cannot hold any of the model.
 
 | Prefill | Decode | Context |
 | --- | --- | --- |
-| ~100–130 tok/s on long prompts (2K+ tokens). Short prompts may vary more due to overhead. | ~17–32 tok/s (depending on context and draft acceptance). | 131072 |
-
+| ~100–130 tok/s on long prompts (2K+ tokens). Short prompts may vary more due to overhead. | ~17–30 tok/s (depending on context and draft acceptance). | 262144 |
+<details>
+   
 **Environment:**
 
 - Strata v 0.1.45.3 (built from source via `tools\hip\build_windows.bat`)
@@ -56,7 +57,7 @@ too and cannot hold any of the model.
 - hipBLASLt: 100500
 - OS: Windows 10 (64-bit)
 - RAM: 64 GB
-- 
+  
 **Build steps**
 1. Download "Source code (zip)" https://github.com/Niko1221/Strata/releases/tag/v0.1.45
 2. In `setup.py`, add `0x731F: "gfx1010"` to `_WIN_AMD_DID`.
@@ -70,45 +71,46 @@ too and cannot hold any of the model.
    ```
    cmd
    python setup.py --backend hip --setup
- - Which model? -> 1
- - Edit strata-iq3_s.json
+6. Edit strata-iq3_s.json
    
  <details>
     
-***strata-iq3_s.json***
-{
- "exe": "G:\\ai\\Strata-main\\engine\\strata.exe",
+ ```
+"exe": "G:\\ai\\Strata-main\\engine\\strata.exe",
  "args": [
   "--pack",
   "G:\\ai\\Strata-data\\packs\\iq3_s",
   "--native",
-  "G:\\ai\\Strata-data\\models\\IQ3_S\\Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
+  "G:\\ai\\Strata-data\\models\\Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
   "--ple-gguf",
-  "G:\\ai\\Strata-data\\models\\IQ3_S\\Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf",
+  "G:\\ai\\Strata-data\\models\\Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00002-of-00002.gguf",
   "--expert-profile",
   "G:\\ai\\Strata-main\\data\\expert-profile.bin",
   "--expert-cache",
-  "auto",
+  "1",
   "--prefill",
-  "auto",
+  "2048",
   "--spec",
   "4",
   "--spec-min-p",
-  "0.85",
+  "0.8",
   "--mtp",
   "G:\\ai\\Strata-data\\mtp\\rt",
   "--max-context",
-  "131072",
+  "262144",
   "--kv",
-  "q4_0",
+  "k8v4",
   "--vision",
   "--adapt-async",
-  "1"
+  "1",
+  "--kv-resident",
+  "16384",
+  "--prefill-head-alias",
+  "--short-read",
+  "0"
  ],
  "env": {
-  "STRATA_PIN_BY_NEED": "1",
-  "STRATA_PREFILL_MMQ": "1",
-  "STRATA_PREFILL_CPU_SHARE": "auto"
+  "STRATA_PREFILL_CPU_SHARE": "1"
  },
  "cwd": "G:\\ai\\Strata-main",
  "tokenizer": "G:\\ai\\Strata-data\\packs\\iq3_s\\tokenizer",
@@ -123,7 +125,7 @@ too and cannot hold any of the model.
  "vision": {
   "exe": "G:\\ai\\Strata-main\\engine\\strata-vision.exe",
   "mmproj": "G:\\ai\\Strata-data\\models\\mmproj-Qwen3.8-Flash-Next-BF16.gguf",
-  "model": "G:\\ai\\Strata-data\\models\\IQ3_S\\Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
+  "model": "G:\\ai\\Strata-data\\models\\Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
   "gpu": false,
   "max_tokens": 300,
   "threads": 16
@@ -131,11 +133,11 @@ too and cannot hold any of the model.
  "open_browser": false,
  "allowed_hosts": ["host.docker.internal"]
 }
-
+```
 </details>
 
-6. Double-click run-iq3_s.bat
-  
+7. Double-click run-iq3_s.bat
+</details>
 
 
 ### Maxwell (sm_52)
